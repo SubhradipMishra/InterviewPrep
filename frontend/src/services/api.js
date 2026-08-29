@@ -18,11 +18,6 @@ api.interceptors.request.use(
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     
-    const grokKey = localStorage.getItem('grokKey');
-    if (grokKey) {
-      config.headers['X-Grok-API-Key'] = grokKey;
-    }
-    
     return config;
   },
   (error) => {

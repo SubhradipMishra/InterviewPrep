@@ -861,7 +861,7 @@ Format your responses with clear markdown headers, bold text, and lists where ap
       return { reply };
     } catch (error) {
       console.error('Error in coach chat from Gemini:', error.message);
-      return { reply: "I'm sorry, I encountered a temporary connection issue. How can I help you prepare for your technical questions?" };
+      throw error;
     }
   }
 };

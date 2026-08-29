@@ -14,20 +14,6 @@ export default function CoachChat() {
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // xAI API key activation state
-  const [apiKeyVal, setApiKeyVal] = useState(localStorage.getItem('grokKey') || '');
-  const [hasKey, setHasKey] = useState(!!localStorage.getItem('grokKey'));
-
-  const handleActivateKey = () => {
-    if (!apiKeyVal.trim()) {
-      alert('Please paste a valid xAI API key.');
-      return;
-    }
-    localStorage.setItem('grokKey', apiKeyVal.trim());
-    setHasKey(true);
-    alert('Grok API Key activated! Chat is now connected to the live xAI Grok-2 model.');
-    window.location.reload();
-  };
 
   // Auto scroll to bottom
   const scrollToBottom = () => {
@@ -72,10 +58,13 @@ export default function CoachChat() {
 
       setMessages(prev => [...prev, coachMessage]);
     } catch (err) {
+      console.log(err);
       console.error('Error in coach chat:', err);
+      
+      const backendError = err.response?.data?.message || err.message;
       setMessages(prev => [...prev, {
         sender: 'coach',
-        text: "⚠️ System offline. I had trouble communicating with the Gemini AI service. Please verify your internet or try again.",
+        text: `⚠️ System offline. Error: ${backendError}. Please verify your internet or try again.`,
         createdAt: new Date().toISOString()
       }]);
     } finally {
@@ -85,17 +74,17 @@ export default function CoachChat() {
 
   const renderMarkdown = (text) => {
     if (!text) return '';
-    
+
     // Normalize line endings to avoid Carriage Return quirks on Windows/other systems
     let html = text
       .replace(/\r\n/g, '\n')
       .replace(/\r/g, '\n');
-      
+
     // Parse Javascript/generic code blocks
     html = html.replace(/\`\`\`javascript([\s\S]*?)\`\`\`/gim, (match, code) => {
       return `<pre style="background: hsl(var(--bg-dark)); padding: 0.75rem; border-radius: var(--radius-sm); margin: 0.5rem 0; font-family: monospace; font-size: 0.85rem; overflow-x: auto; border: 1px solid hsl(var(--border-light)); color: #a9b1d6;">${code.trim()}</pre>`;
     });
-    
+
     html = html.replace(/\`\`\`([\s\S]*?)\`\`\`/gim, (match, code) => {
       return `<pre style="background: hsl(var(--bg-dark)); padding: 0.75rem; border-radius: var(--radius-sm); margin: 0.5rem 0; font-family: monospace; font-size: 0.85rem; overflow-x: auto; border: 1px solid hsl(var(--border-light));">${code.trim()}</pre>`;
     });
@@ -153,8 +142,8 @@ export default function CoachChat() {
           {messages.map((msg, index) => {
             const isCoach = msg.sender === 'coach';
             return (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`chat-bubble ${isCoach ? 'coach' : 'user'}`}
                 style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}
               >
@@ -168,13 +157,13 @@ export default function CoachChat() {
                     {isCoach ? 'Coach' : 'You'}
                   </span>
                 </div>
-                
+
                 <div className="bubble-text" style={{ lineHeight: '1.5' }}>
                   {isCoach ? renderMarkdown(msg.text) : msg.text}
                 </div>
 
-                <span style={{ 
-                  fontSize: '0.65rem', 
+                <span style={{
+                  fontSize: '0.65rem',
                   color: isCoach ? 'hsl(var(--text-dark))' : 'rgba(255, 255, 255, 0.6)',
                   alignSelf: 'flex-end',
                   marginTop: '0.25rem'
@@ -187,33 +176,33 @@ export default function CoachChat() {
 
           {sending && (
             <div className="chat-bubble coach" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ 
-                width: '6px', 
-                height: '6px', 
-                borderRadius: '50%', 
+              <div style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
                 backgroundColor: 'hsl(var(--text-muted))',
                 animation: 'pulseGlow 1s infinite'
               }}></div>
               <span style={{ fontSize: '0.85rem', color: 'hsl(var(--text-muted))', fontStyle: 'italic' }}>Coach is typing...</span>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
         {/* Input Bar */}
         <form onSubmit={handleSend} className="chat-input-area">
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Type your question (e.g. 'How do JavaScript closures work?' or 'Explain the STAR method')..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={sending}
             style={{ borderRadius: 'var(--radius-sm)' }}
           />
-          <button 
-            type="submit" 
-            className="btn-primary" 
+          <button
+            type="submit"
+            className="btn-primary"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.75rem 1.25rem' }}
             disabled={sending || !input.trim()}
           >

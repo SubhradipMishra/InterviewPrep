@@ -2,14 +2,13 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const InterviewModel = require('../models/Interview');
-const GeminiService = require('../services/grok');
-
+const GeminiService = require('../services/gemini');
 // MAX questions per mock interview session
 const MAX_QUESTIONS = 20;
 
 // Helper to read client-provided API key from multiple header names
 const readClientApiKey = (req) => {
-  return req.headers['x-gemini-api-key'] || req.headers['x-grok-api-key'] || req.headers['x-grok-api-key'.toLowerCase()];
+  return req.headers['x-gemini-api-key'] || req.headers['x-gemini-api-key'.toLowerCase()];
 };
 
 // @route   POST api/interviews
@@ -258,16 +257,19 @@ router.post('/resume', auth, async (req, res) => {
 router.post('/coach-chat', auth, async (req, res) => {
   const { message, chatHistory } = req.body;
   if (!message || message.trim() === '') {
-    return res.status(400).json({ message: 'Message text is required' });
+    return res.status(400).json({ success: false, message: 'Message text is required' });
   }
 
   try {
-    const clientApiKey = req.headers['x-gemini-api-key'];
+    const clientApiKey = readClientApiKey(req);
     const replyResults = await GeminiService.chatWithCoach(message, chatHistory || [], clientApiKey);
-    res.json(replyResults);
+    res.status(200).json({ success: true, reply: replyResults.reply });
   } catch (err) {
-    console.error('Error in coach chatbot route:', err.message);
-    res.status(500).json({ message: 'Server error during chat dialogue' });
+    console.error('Coach chat AI error:', {
+      message: err.message,
+      status: err.response?.status
+    });
+    res.status(500).json({ success: false, message: err.message || 'Server error during chat dialogue' });
   }
 });
 
