@@ -158,7 +158,7 @@ const GeminiService = {
 
     // 2. Real Gemini Mode
     try {
-      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
       const prompt = `You are a professional technical recruiter and interviewer.
 The candidate is interviewing for:
 - Job Role: ${role}
@@ -518,7 +518,7 @@ An ideal response to this question should:
 
     // 2. Real Gemini Mode
     try {
-      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
       const prompt = `You are a professional technical interviewer.
 Evaluate the candidate's answer to the question.
 Context:
@@ -594,7 +594,7 @@ You completed a mock interview consisting of ${questionsAndAnswers.length} quest
 
     // 2. Real Gemini Mode
     try {
-      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
       const transcript = questionsAndAnswers.map((qa, index) => {
         return `Q${index + 1}: ${qa.questionText}\nA${index + 1}: ${qa.userAnswer}\nScore: ${qa.feedback?.score || 'N/A'}\nFeedback: ${qa.feedback?.comments || 'N/A'}\n`;
       }).join('\n---\n');
@@ -671,7 +671,7 @@ Respond ONLY with a valid JSON object in this format:
 
     // 2. Real Gemini Mode
     try {
-      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
       const prompt = `You are an expert resume critic and hiring recruiter.
 Review this candidate's resume text:
 "${resumeText}"
@@ -828,7 +828,7 @@ In this mode, I can provide detailed, curated lessons on core interview topics! 
 
     // 2. Real Gemini Mode
     try {
-      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
       const systemInstruction = `You are a helpful, empathetic, and expert technical interview coach.
 Your job is to prepare candidates for engineering and product manager jobs.
 Be structured, clear, and encouraging. Provide code snippets (using markdown) when explaining code concepts.
