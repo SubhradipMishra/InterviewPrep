@@ -158,7 +158,7 @@ const GeminiService = {
 
     // 2. Real Gemini Mode
     try {
-      const model = activeClient.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+      const model = activeClient.getGenerativeModel({ model: 'gemini-2.5-flash' });
       const prompt = `You are a professional technical recruiter and interviewer.
 The candidate is interviewing for:
 - Job Role: ${role}
@@ -194,7 +194,7 @@ Respond ONLY with a valid JSON object in this format:
    */
   getMockModelAnswer: (question) => {
     const q = question.toLowerCase();
-    
+
     // --- FRONTEND QUESTIONS ---
     if (q.includes('let') && q.includes('const') && q.includes('var')) {
       return `### Correct and Proper Answer:
@@ -202,7 +202,7 @@ Respond ONLY with a valid JSON object in this format:
 2. **let**: Block-scoped (contained in {}), can be updated but not re-declared. It is hoisted but remains in the "Temporal Dead Zone" until declared.
 3. **const**: Block-scoped, cannot be updated or re-declared. It must be initialized immediately at the time of declaration.`;
     }
-    
+
     if (q.includes('box model')) {
       return `### Correct and Proper Answer:
 The CSS Box Model is the foundation of design layouts. It wraps every HTML element in four nested boxes:
@@ -212,7 +212,7 @@ The CSS Box Model is the foundation of design layouts. It wraps every HTML eleme
 4. **Margin**: Clear space outside the border separating this element from others.
 *Total Element Width* = Width + Left/Right Padding + Left/Right Border. If box-sizing is set to 'border-box', padding and border are included in the width, making layout sizing much easier.`;
     }
-    
+
     if (q.includes('state') && q.includes('props') && q.includes('react')) {
       return `### Correct and Proper Answer:
 1. **Props** (Properties): Passed from a parent component down to a child component. They are read-only (immutable) on the child side.
@@ -231,14 +231,14 @@ The CSS Box Model is the foundation of design layouts. It wraps every HTML eleme
 **Event delegation** is a technique where a single event listener is attached to a parent element rather than attaching individual listeners to multiple child elements. It utilizes **event propagation (bubbling)**—when an event occurs on a child, it bubbles up to the parent.
 - **Why use it**: It improves performance by reducing memory consumption (fewer event listeners) and automatically handles events for children added dynamically to the DOM.`;
     }
-    
+
     if (q.includes('hooks') && q.includes('useeffect')) {
       return `### Correct and Proper Answer:
 - **useEffect**: Performs side effects (data fetching, subscriptions, DOM manipulation). It runs after rendering. The dependency array decides when it re-runs. Returning a function acts as the cleanup handler (componentWillUnmount).
 - **useMemo**: Memoizes (caches) the *result of a calculation* to prevent expensive recalculations on every render.
 - **useCallback**: Memoizes the *function instance itself*, preventing it from being re-created on every render (useful to prevent unnecessary re-renders in optimized child components).`;
     }
-    
+
     if (q.includes('virtual dom') && q.includes('reconciliation')) {
       return `### Correct and Proper Answer:
 The **Virtual DOM** is a lightweight JavaScript representation of the real DOM.
@@ -336,7 +336,7 @@ Handling asynchronous actions in Node.js:
 2. **Promises**: An object representing the eventual completion or failure of an async action. Clean chaining via \`.then()\` and \`.catch()\`.
 3. **Async/Await**: Syntactic sugar built on top of Promises. Allows async code to be written sequentially, improving readability. Handled with standard \`try-catch\` blocks.`;
     }
-    
+
     if (q.includes('error propagation') || q.includes('express')) {
       return `### Correct and Proper Answer:
 In Express, error handling follows standard propagation pathways:
@@ -473,7 +473,7 @@ An ideal response to this question should:
       const wordCount = answer.trim().split(/\s+/).length;
       const lowerAnswer = answer.toLowerCase();
       const tailoredAnswer = GeminiService.getMockModelAnswer(question);
-      
+
       // Determine if they mentioned core concepts of the question
       let keywordsMatched = 0;
       let score = 50;
@@ -509,10 +509,10 @@ An ideal response to this question should:
         comments = "Your answer is partially correct but not complete. You outlined the basics, but missed explaining the architectural details. Refer to the correct and proper answer below.";
       }
 
-      return { 
-        score, 
-        comments, 
-        betterAnswer: tailoredAnswer 
+      return {
+        score,
+        comments,
+        betterAnswer: tailoredAnswer
       };
     }
 
