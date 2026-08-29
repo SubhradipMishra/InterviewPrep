@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+let envUrl = import.meta.env.VITE_API_URL || '/api';
+if (envUrl && !envUrl.startsWith('http') && !envUrl.startsWith('/')) {
+  envUrl = 'https://' + envUrl;
+}
+const baseURL = envUrl.replace(/\/+$/, '');
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api'
+  baseURL
 });
 
 // Interceptor to inject JWT token and client Gemini key on every request

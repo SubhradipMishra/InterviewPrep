@@ -7,11 +7,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: '*', // Allow all origins for now to prevent CORS issues
+  origin: true, // Reflects the incoming origin, which is required when using credentials or strict browsers
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Grok-API-Key']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Grok-API-Key', 'Accept', 'Origin']
 }));
-app.options('*', cors()); // Explicitly handle OPTIONS requests for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
